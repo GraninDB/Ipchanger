@@ -1,0 +1,59 @@
+﻿<Window x:Class="IPChanger.Forms.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="О программе"
+        Width="420" Height="220"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Верх: картинка слева, тексты справа -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- PNG подключён как Resource в .csproj -->
+            <Image Grid.Column="0"
+                   Source="IPChanger.png"
+                   Width="96" Height="96"
+                   Stretch="Uniform"
+                   VerticalAlignment="Top"
+                   RenderOptions.BitmapScalingMode="HighQuality"/>
+
+            <StackPanel Grid.Column="1" Margin="16,0,0,0">
+                <TextBlock x:Name="AppNameText"
+                           Text="IPChanger"
+                           FontSize="20"
+                           FontWeight="SemiBold"/>
+
+                <TextBlock x:Name="VersionTextBlock"
+                           Text="{Binding VersionText, RelativeSource={RelativeSource AncestorType=Window}}"
+                           Foreground="#555"
+                           Margin="0,4,0,0"/>
+
+                <TextBlock x:Name="DescriptionText"
+                           Margin="0,12,0,0"
+                           TextWrapping="Wrap"
+                           Text="Утилита для быстрой смены IP-адреса сетевых адаптеров."/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Низ: кнопка закрытия -->
+        <Button x:Name="CloseButton"
+                Grid.Row="1"
+                Content="Закрыть"
+                Width="90"
+                HorizontalAlignment="Right"
+                Margin="0,16,0,0"
+                IsDefault="True"
+                IsCancel="True"
+                Click="OnCloseClick"/>
+    </Grid>
+</Window>

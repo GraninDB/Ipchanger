@@ -1,0 +1,17 @@
+﻿<Project Sdk="WixToolset.Sdk/6.0.0">
+  <PropertyGroup>
+    <OutputName>IPChanger-$(WixMsiVersion)</OutputName>
+    <OutputType>Package</OutputType>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <SuppressIces>ICE38;ICE43;ICE57</SuppressIces>
+    <DefineConstants>VERSION=$(WixMsiVersion)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <BindPath Include="..\bin\Release\net9.0-windows\win-x64\publish" />
+    <BindPath Include=".." />
+  </ItemGroup>
+</Project>

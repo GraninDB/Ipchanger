@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Version>0.3.1.0</Version>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>IPChanger.ico</ApplicationIcon>
+
+    <RootNamespace>IPChanger</RootNamespace>
+    <AssemblyName>IPChanger</AssemblyName>
+    <SelfContained>false</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <RollForward>LatestPatch</RollForward>
+    <PlatformTarget>x64</PlatformTarget>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- PNG встраивается в сборку как WPF-Resource.
+         В XAML ссылаемся по короткому имени: Source="IPChanger.png" -->
+    <Resource Include="IPChanger.png" />
+
+    <Content Include="Translations\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+
+    <Content Include="LICENSE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>KeepNewest</CopyToPublishDirectory>
+    </Content>
+
+    <Content Include="LICENSE.rtf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>KeepNewest</CopyToPublishDirectory>
+    </Content>
+
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
+  </ItemGroup>
+
+  <Target Name="BuildMsi" AfterTargets="Publish" Condition="'$(Configuration)' == 'Release'">
+    <Message Text="Building MSI (Release)" Importance="high" />
+    <MSBuild Projects="WiX\IPChanger.Setup.wixproj" Properties="Configuration=Release;WixMsiVersion=$(Version)" />
+  </Target>
+
+  <Target Name="BuildMsiDebug" AfterTargets="Publish" Condition="'$(Configuration)' == 'Debug'">
+    <Message Text="Building MSI (Debug)" Importance="high" />
+    <MSBuild Projects="WiX\IPChanger.Setup.wixproj" Properties="Configuration=Debug;WixMsiVersion=$(Version)" />
+  </Target>
+
+</Project>

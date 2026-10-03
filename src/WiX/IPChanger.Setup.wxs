@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="IPChanger"
+             Version="$(var.VERSION)"
+            Manufacturer="IPChanger"
+            UpgradeCode="BD9D8D6D-19A7-4755-A536-AEE2C75D1636"
+            Scope="perMachine">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Property Id="CREATE_DESKTOP_SHORTCUT" Value="1" Secure="yes" />
+    <Property Id="CREATE_STARTMENU_SHORTCUT" Value="1" Secure="yes" />
+    <WixVariable Id="WixUILicenseRtf" Value="..\LICENSE.rtf" />
+
+    <Feature Id="ProductFeature" Title="IPChanger" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
+    </Feature>
+
+    <Feature Id="DesktopShortcutFeature" Title="Desktop Shortcut" Level="0">
+      <ComponentRef Id="DesktopShortcutComponent" />
+      <Level Value="1" Condition="CREATE_DESKTOP_SHORTCUT = 1" />
+    </Feature>
+
+    <Feature Id="StartMenuShortcutFeature" Title="Start Menu Shortcut" Level="0">
+      <ComponentRef Id="StartMenuShortcutComponent" />
+      <Level Value="1" Condition="CREATE_STARTMENU_SHORTCUT = 1" />
+    </Feature>
+
+    <UI>
+      <UIRef Id="CustomWixUI_InstallDir" />
+    </UI>
+  </Package>
+
+  <Fragment>
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="IPChanger" />
+    </StandardDirectory>
+    <StandardDirectory Id="DesktopFolder" />
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="IPChangerProgramMenuFolder" Name="IPChanger" />
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+     <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="MainExecutable"
+                 Guid="3057D6DE-4583-41D6-846A-7A0D18E1BF2C"
+                 Bitness="always64">
+        <File Id="IPChangerExe"
+            Name="IPChanger.exe"
+            Source="..\bin\Release\net9.0-windows\win-x64\publish\IPChanger.exe" />
+      </Component>
+
+      <Component Id="LicenseFile"
+                 Guid="D2F8A1B3-E4C5-4A7D-8B9E-6F1A2C3D4E5F"
+                 Bitness="always64">
+        <File Id="LicenseTxt"
+            Name="LICENSE"
+            Source="..\LICENSE" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <Icon Id="IPChangerExeIcon" SourceFile="..\bin\Release\net9.0-windows\win-x64\publish\IPChanger.exe" />
+  </Fragment>
+
+  <Fragment>
+    <Component Id="DesktopShortcutComponent"
+               Guid="A8B6C5D4-E3F2-4A1B-9C8D-7E6F5A4B3C2D"
+               Directory="DesktopFolder">
+      <Shortcut Id="DesktopShortcut"
+                Name="IPChanger"
+                Target="[INSTALLFOLDER]IPChanger.exe"
+                Icon="IPChangerExeIcon"
+                IconIndex="0" />
+      <RegistryValue Root="HKLM"
+                     Key="Software\IPChanger"
+                     Name="desktop_shortcut"
+                     Type="integer"
+                     Value="1"
+                     KeyPath="yes" />
+    </Component>
+  </Fragment>
+
+  <Fragment>
+    <Component Id="StartMenuShortcutComponent"
+               Guid="B9C7D6E5-F4A3-5B2C-0D9E-8F7A6B5C4D3E"
+               Directory="IPChangerProgramMenuFolder">
+      <Shortcut Id="StartMenuShortcut"
+                Name="IPChanger"
+                Target="[INSTALLFOLDER]IPChanger.exe"
+                Icon="IPChangerExeIcon"
+                IconIndex="0" />
+      <RemoveFolder Id="RemoveIPChangerProgramMenuFolder"
+                    Directory="IPChangerProgramMenuFolder"
+                    On="uninstall" />
+      <RegistryValue Root="HKLM"
+                     Key="Software\IPChanger"
+                     Name="startmenu_shortcut"
+                     Type="integer"
+                     Value="1"
+                     KeyPath="yes" />
+    </Component>
+  </Fragment>
+
+  <Fragment>
+    <UI Id="CustomWixUI_InstallDir">
+      <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+
+      <Dialog Id="ShortcutsDialog" Width="370" Height="270"
+              Title="[ProductName] Setup" NoMinimize="yes">
+        <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44"
+                 TabSkip="no" Text="WixUI_Bmp_Banner" />
+        <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+        <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+        <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15"
+                 Transparent="yes" NoPrefix="yes"
+                 Text="{\WixUI_Font_Title}Additional Options" />
+        <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15"
+                 Transparent="yes" NoPrefix="yes"
+                 Text="{\WixUI_Font_Normal}Select additional tasks:" />
+        <Control Id="DesktopShortcutCheckbox" Type="CheckBox" X="20" Y="100"
+                 Width="330" Height="17"
+                 Property="CREATE_DESKTOP_SHORTCUT"
+                 CheckBoxValue="1"
+                 Text="{\WixUI_Font_Normal}Create a desktop shortcut" />
+        <Control Id="StartMenuShortcutCheckbox" Type="CheckBox" X="20" Y="125"
+                 Width="330" Height="17"
+                 Property="CREATE_STARTMENU_SHORTCUT"
+                 CheckBoxValue="1"
+                 Text="{\WixUI_Font_Normal}Create a Start Menu shortcut" />
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17"
+                 Text="!(loc.WixUIBack)">
+          <Publish Event="NewDialog" Value="InstallDirDlg" />
+        </Control>
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17"
+                 Default="yes" Text="!(loc.WixUINext)">
+          <Publish Event="NewDialog" Value="VerifyReadyDlg" />
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17"
+                 Cancel="yes" Text="!(loc.WixUICancel)">
+          <Publish Event="SpawnDialog" Value="CancelDlg" />
+        </Control>
+      </Dialog>
+
+      <Publish Dialog="InstallDirDlg" Control="Next"
+               Event="NewDialog" Value="ShortcutsDialog"
+               Order="99" Condition="NOT Installed" />
+      <Publish Dialog="VerifyReadyDlg" Control="Back"
+               Event="NewDialog" Value="ShortcutsDialog"
+               Order="99" Condition="NOT Installed" />
+    </UI>
+  </Fragment>
+
+</Wix>

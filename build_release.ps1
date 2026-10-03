@@ -1,0 +1,1 @@
+dotnet clean -c Release src\IPChanger.csproj 2>&1; dotnet build -c Release -t:Publish src\IPChanger.csproj 2>&1

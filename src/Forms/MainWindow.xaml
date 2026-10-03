@@ -1,0 +1,10 @@
+﻿<Window x:Class="IPChanger.Forms.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        ShowInTaskbar="False"
+        WindowState="Minimized"
+        Visibility="Hidden"
+        Width="1" Height="1">
+    <Grid>
+    </Grid>
+</Window>
